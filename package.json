@@ -19,5 +19,11 @@
   "bugs": {
     "url": "https://github.com/smanousopoulos/nodejs-showcase/issues"
   },
-  "homepage": "https://github.com/smanousopoulos/nodejs-showcase#readme"
+  "homepage": "https://github.com/smanousopoulos/nodejs-showcase#readme",
+  "devDependencies": {
+    "babel-jest": "^21.0.2",
+    "jest": "^21.1.0"
+  },
+  "dependencies": {
+  }
 }
