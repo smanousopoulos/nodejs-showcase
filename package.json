@@ -1,0 +1,23 @@
+{
+  "name": "nodejs-showcase",
+  "version": "0.0.1",
+  "description": "An app that gathers information about known events from different sources",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smanousopoulos/nodejs-showcase.git"
+  },
+  "keywords": [
+    "node",
+    "events"
+  ],
+  "author": "Stelios Manousopoulos",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/smanousopoulos/nodejs-showcase/issues"
+  },
+  "homepage": "https://github.com/smanousopoulos/nodejs-showcase#readme"
+}
