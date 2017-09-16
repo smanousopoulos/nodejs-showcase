@@ -1,10 +1,12 @@
 {
   "name": "nodejs-showcase",
   "version": "0.0.1",
-  "description": "An app that gathers information about known events from different sources",
+  "description": "An app that gathers pois from different sources",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "start": "node index.js",
+    "develop": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -25,5 +27,9 @@
     "jest": "^21.1.0"
   },
   "dependencies": {
+    "express": "^4.15.4",
+    "isomorphic-fetch": "^2.2.1",
+    "mustache-express": "^1.2.5",
+    "wikijs": "^4.2.1"
   }
 }
