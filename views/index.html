@@ -4,44 +4,51 @@
 		<!-- leaflet -->
 		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ==" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js" integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log==" crossorigin=""></script>
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io-stream/0.9.1/socket.io-stream.js"></script>
   </head>
   <body style="margin:0">
 		<div id="map" style="width: 100vw; height: 100vh;" />
 
 		<script>
 			window.onload = function() {
-				var map = L.map('map').setView([37.9849, 23.7459], 13);
+
+        var socket = io.connect('/geosearch');
+
+        ss(socket).on('poi', (stream, data) => {
+          stream.on('data', (poiBuffer) => {
+            const poi = JSON.parse(poiBuffer.toString());
+            console.log('poi:', poi);
+
+            if (!poi || !poi.coordinates) return;
+            L.marker([poi.coordinates.lat, poi.coordinates.lon])
+              .addTo(map)
+              .bindPopup(`
+                  <div>
+                    <a href="${poi.url}">
+                      <img style="height: 100px" src="${poi.images && poi.images[0]}"/>
+                      <h4>${poi.title}</h4>
+                    </a>
+                    <p>${poi.summary.slice(0, 300)}</p>
+                  </div>
+                  `);
+          })
+          .on('end', () => {
+            console.log('end of stream');
+          });
+        });
+
+				var map = L.map('map').setView([37.9849, 23.7459], 8);
 			
 				navigator.geolocation.getCurrentPosition((position) => {
           const x = position.coords.longitude;
           const y = position.coords.latitude;
           const r = 1000;
 
-          fetch(`/geosearch?lat=${y}&lon=${x}&radius=${r}`)
-            .then(res => res.json())
-            .then(res => res.results)
-            .then((pois) => {
-              pois.forEach((poi) => {
-              if (!poi || !poi.coordinates) return;
-              L.marker([poi.coordinates.lat, poi.coordinates.lon])
-                .addTo(map)
-                .bindPopup(`
-                    <div>
-                      <a href="${poi.url}">
-                        <img style="height: 100px" src="${poi.images && poi.images[0]}"/>
-                        <h4>${poi.title}</h4>
-                      </a>
-                      <p>${poi.summary.slice(0, 300)}</p>
-                    </div>
-                    `);
-              });
-            })
-            .catch((error) => { 
-              console.error('caught error', error);
-            });
+          socket.emit('geosearch', y, x, r);
 				}, 
 		     (error) => {
-          console.error('geolocation error');  
+          console.error('geolocation error', error);  
          },
          {
            enableHighAccuracy: false,

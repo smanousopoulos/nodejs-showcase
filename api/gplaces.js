@@ -2,9 +2,16 @@ const fetch = require('isomorphic-fetch');
 
 const key = 'AIzaSyA-xlsZjK45BPKbB2XMavxQWbC4CKMSeaA';
 
-const geosearch = (lat, lon, radius = 1000) => fetch(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&radius=${radius}&type=point_of_interest&key=${key}`)
+const geosearch = (lat, lon, radius = 1000, token) => fetch(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&radius=${radius}&type=point_of_interest&key=${key}`)
 .then(res => res.json())
-.then(res => res.results.map(poi => ({
+.then((res) => {
+  if (!res.status === 'OK') { 
+    throw res.status;
+  }
+  return res;
+});
+
+const transformPOI = poi => ({
     title: poi.name,
     url: null, 
     images: [],
@@ -16,8 +23,9 @@ const geosearch = (lat, lon, radius = 1000) => fetch(`https://maps.googleapis.co
     },
     icon: poi.icon,
     id: poi.id,
-})));
+});
 
 module.exports = {
   geosearch,
+  transformPOI,
 };
