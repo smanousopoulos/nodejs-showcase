@@ -1,25 +1,25 @@
 <html>
   <head>
     <title>POIs</title>
-		<!-- leaflet -->
-		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ==" crossorigin=""/>
+    <!-- leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ==" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js" integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log==" crossorigin=""></script>
     <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io-stream/0.9.1/socket.io-stream.js"></script>
   </head>
   <body style="margin:0">
-		<div id="map" style="width: 100vw; height: 100vh;" />
-
-		<script>
-			window.onload = function() {
-
+    <div id="map" style="width: 100vw; height: 100vh;" />
+      
+    <script>
+      window.onload = function() {
+      
         var socket = io.connect('/geosearch');
-
+      
         ss(socket).on('poi', (stream, data) => {
           stream.on('data', (poiBuffer) => {
             const poi = JSON.parse(poiBuffer.toString());
             console.log('poi:', poi);
-
+            
             if (!poi || !poi.coordinates) return;
             L.marker([poi.coordinates.lat, poi.coordinates.lon])
               .addTo(map)
@@ -37,32 +37,32 @@
             console.log('end of stream');
           });
         });
+        
+        var map = L.map('map').setView([37.9849, 23.7459], 8);
 
-				var map = L.map('map').setView([37.9849, 23.7459], 8);
-			
-				navigator.geolocation.getCurrentPosition((position) => {
+        navigator.geolocation.getCurrentPosition((position) => {
           const x = position.coords.longitude;
           const y = position.coords.latitude;
           const r = 1000;
 
           socket.emit('geosearch', y, x, r);
-				}, 
-		     (error) => {
-          console.error('geolocation error', error);  
-         },
-         {
-           enableHighAccuracy: false,
-           timeout: 5000,
-         });
-
-				L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-				maxZoom: 18,
-				attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-				'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-				'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-				id: 'mapbox.streets'
-			}).addTo(map);
-		}
-		</script>
+        }, 
+        (error) => {
+          console.error('geolocation error', error);
+        },
+        {
+          enableHighAccuracy: false,
+          timeout: 5000,
+        });
+        
+        L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+          maxZoom: 18,
+          attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+            '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+            'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+          id: 'mapbox.streets',
+        }).addTo(map);
+      }
+    </script>
   </body>
 </html>
