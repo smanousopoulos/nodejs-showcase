@@ -1,6 +1,6 @@
 const fetch = require('isomorphic-fetch');
 
-const key = 'AIzaSyA-xlsZjK45BPKbB2XMavxQWbC4CKMSeaA';
+const key = require('./gplaces.key'); 
 
 const geosearch = (lat, lon, radius = 1000, token) => fetch(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&radius=${radius}&type=point_of_interest&key=${key}`)
 .then(res => res.json())
