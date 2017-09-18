@@ -9,37 +9,36 @@ const WikiStream = function(lat, lon, radius = 1000) {
   this.lon = lon;
   this.radius = radius;
   this.page = 0;
-  this.started = false;
+  this.runLock = false;
 };
 
 util.inherits(WikiStream, Readable);
 
 WikiStream.prototype._read = function(n) {
-  const self = this;
-  if (!self.started) {
-    self.started = true;
+  if (!this.runLock) {
+    this.runLock = true;
     geosearch(this.lat, this.lon, this.radius)
     .then((pages) => {
-      self.pages = pages.length;
+      this.pages = pages.length;
       pages.forEach((page, i) => {
         fetchPage(page).then((poi) => {
           this.push(JSON.stringify(poi));  
-          if (self.page === self.pages - 1) {
+          if (this.page === this.pages - 1) {
             this.push(null);
           }
-          self.page++;
+          this.page++;
         })
         .catch((err) => {
-          console.error('page error', err);
-          if (self.page === self.pages - 1) {
+          console.error('WikiStream page error:', err);
+          if (this.page === this.pages - 1) {
             this.push(null);
           }
-          self.page++;
+          this.page++;
         });
       });
     })
     .catch((err) => {
-      console.error('geosearch error', err);
+      console.error('WikiStream error:', err);
     });
   } 
 };
