@@ -40,10 +40,20 @@
         
         var map = L.map('map').setView([37.9849, 23.7459], 8);
 
+        map.on('moveend', () => {
+          const { lat, lng } = map.getCenter();
+          console.log('move end', lat, lng);
+          const r = 100;
+
+          socket.emit('geosearch', lat, lng, r);
+
+        });
+        
+        /*
         navigator.geolocation.getCurrentPosition((position) => {
           const x = position.coords.longitude;
           const y = position.coords.latitude;
-          const r = 1000;
+          const r = 200;
 
           socket.emit('geosearch', y, x, r);
         }, 
@@ -54,6 +64,7 @@
           enableHighAccuracy: false,
           timeout: 5000,
         });
+        */
         
         L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
           maxZoom: 18,
