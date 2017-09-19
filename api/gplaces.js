@@ -22,9 +22,9 @@ const transformPOI = poi => ({
     images: [],
     info: {},
     summary: poi.name,
-    coordinates: {
-      lat: poi.geometry.location.lat,
-      lon: poi.geometry.location.lng,
+    location: {
+      type: 'Point',
+      coordinates: [poi.geometry.location.lng, poi.geometry.location.lat],
     },
     icon: poi.icon,
     id: poi.id,

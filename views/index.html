@@ -20,8 +20,8 @@
             const poi = JSON.parse(poiBuffer.toString());
             console.log('poi:', poi);
             
-            if (!poi || !poi.coordinates) return;
-            L.marker([poi.coordinates.lat, poi.coordinates.lon])
+            if (!poi || !poi.location.coordinates) return;
+            L.marker(poi.location.coordinates.reverse())
               .addTo(map)
               .bindPopup(`
                   <div>

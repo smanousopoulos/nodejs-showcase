@@ -17,11 +17,15 @@ const fetchPage = pageId => Promise.all([
   coordinates, 
 ]) => ({
   title: page.raw.title,
+  id: page.raw.title,
   url: page.raw.fullurl,
   summary, 
   info, 
   images, 
-  coordinates, 
+  location: {
+    type: 'Point',
+    coordinates: [coordinates.lon, coordinates.lat],
+  },
 }));
   
 const geosearch = (lat, lon, radius = 1000) => wikipedia.geoSearch(lat, lon, radius);
