@@ -1,6 +1,8 @@
 const wiki = require('wikijs').default;
 
-const wikipedia = wiki({ apiUrl: 'https://el.wikipedia.org/w/api.php' });
+const wikipedia = wiki({ apiUrl: 'https://en.wikipedia.org/w/api.php' });
+
+const WIKI_ICON = 'https://vignette.wikia.nocookie.net/deusex/images/9/96/Wikipedia-logo-v2.svg.png/revision/latest/scale-to-width-down/525?cb=20141229025848&path-prefix=en';
 
 const fetchPage = pageId => Promise.all([
   wikipedia.page(pageId).then(page => page),
@@ -18,6 +20,7 @@ const fetchPage = pageId => Promise.all([
 ]) => ({
   title: page.raw.title,
   id: page.raw.title,
+  icon: WIKI_ICON,
   url: page.raw.fullurl,
   summary, 
   info, 
